@@ -1,11 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.PortableExecutable;
-
-
+﻿
 namespace HuffmanTree
 {
 
@@ -13,64 +6,25 @@ namespace HuffmanTree
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("enter your desired string!");
-            string input = Console.ReadLine();
+            if (args.Length < 2 || (args.Length > 3 && args[1] == "-d") || (args.Length > 2 && args[1] == "-d"))
+            {
+                Console.WriteLine("Invalid CLI arguments");
+                return;
+            }
+
 
             try
             {
-                string programPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-                string filePath = Path.Combine(programPath, "data.txt");
-                string encodedDataPath = Path.Combine(programPath, "encoded.txt");
-                string decodedDataPath = Path.Combine(programPath, "dncoded.txt");
-
-                using (StreamWriter writer = new StreamWriter(filePath))
-                {
-                    writer.WriteLine(input);
-                }
-
-                using (StreamReader reader = new StreamReader(filePath))
-                {
-                    string line = reader.ReadLine();
-                    while (line != null)
-                    {
-                        HuffTree huffTree = new HuffTree(line);
-
-                        string encoded = huffTree.Encode(line);
-                        Console.WriteLine("Encoded: " + encoded);
-                        using (StreamWriter sw1 = new StreamWriter(encodedDataPath))
-                        {
-                            sw1.WriteLine(encoded);
-                            //long fileSizeInKB = fs.FileSizeConverter.ConvertFileSizeToKB(fileSizeInBytes);
-                        }
-
-                        string decoded = huffTree.Decode(encoded);
-                        Console.WriteLine("Decoded: " + decoded);
-                        using (StreamWriter sw2 = new StreamWriter(decodedDataPath))
-                        {
-                            sw2.WriteLine(decoded);
-                        }
-
-                        line = reader.ReadLine();
-                    }
-                }
-
-
-                FileStream fs0 = File.OpenRead(filePath);
-                Console.WriteLine("original data file's size: " + fs0.Length);
-
-                FileStream fs1 = File.OpenRead(encodedDataPath);
-                Console.WriteLine("encoded data file's size: " + fs1.Length);
-
-                FileStream fs2 = File.OpenRead(decodedDataPath);
-                Console.WriteLine("decoded data file's size: " + fs2.Length);
+                if (args[0] == "d" || args[0] == "decode")
+                    _ = new HuffmanDecoder(args[1], args[2]);
+                else
+                    _ = new HuffmanEncoder(File.ReadAllText(args[0]), args[1]);
             }
-            catch (NullReferenceException)
+            catch (Exception e)
             {
-                Console.WriteLine("null reference, file doesn't exist dude!");
+                Console.WriteLine(e.Message);
             }
-            
         }
     }
-    
+
 }
