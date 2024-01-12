@@ -18,8 +18,6 @@ namespace HuffmanTree
                 string binstr = ReadBinaryData(reader);
                 string result = DecodeBinaryString(binstr);
 
-                Console.WriteLine(result);
-
                 // write decoded data
                 File.WriteAllText(outputPath, result);
             }
