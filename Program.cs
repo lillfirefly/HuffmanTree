@@ -1,10 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.PortableExecutable;
-
+﻿using System.IO;
 
 namespace HuffmanTree
 {
@@ -13,64 +7,44 @@ namespace HuffmanTree
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("enter your desired string!");
-            string input = Console.ReadLine();
+            if (args.Length < 2 || (args.Length > 3 && args[1] == "-d") || (args.Length > 2 && args[1] == "-d"))
+            {
+                Console.WriteLine("Invalid CLI arguments");
+                return;
+            }
+
 
             try
             {
-                string programPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-                string filePath = Path.Combine(programPath, "data.txt");
-                string encodedDataPath = Path.Combine(programPath, "encoded.txt");
-                string decodedDataPath = Path.Combine(programPath, "dncoded.txt");
-
-                using (StreamWriter writer = new StreamWriter(filePath))
+                if (args[0] == "d" || args[0] == "decode")
                 {
-                    writer.WriteLine(input);
-                }
+                    _ = new HuffmanDecoder(args[1], args[2]);
 
-                using (StreamReader reader = new StreamReader(filePath))
+                    FileInfo compressedFile = new(args[1]);
+                    FileInfo originalFile = new(args[2]);
+
+                    Console.WriteLine("Original file size: " + originalFile.Length);
+                    Console.WriteLine("Compressed file size: " + compressedFile.Length);
+                }
+                else
                 {
-                    string line = reader.ReadLine();
-                    while (line != null)
-                    {
-                        HuffTree huffTree = new HuffTree(line);
+                    _ = new HuffmanEncoder(File.ReadAllText(args[0]), args[1]);
 
-                        string encoded = huffTree.Encode(line);
-                        Console.WriteLine("Encoded: " + encoded);
-                        using (StreamWriter sw1 = new StreamWriter(encodedDataPath))
-                        {
-                            sw1.WriteLine(encoded);
-                            //long fileSizeInKB = fs.FileSizeConverter.ConvertFileSizeToKB(fileSizeInBytes);
-                        }
+                    FileInfo originalFile = new(args[0]);
+                    FileInfo compressedFile = new(args[1]);
 
-                        string decoded = huffTree.Decode(encoded);
-                        Console.WriteLine("Decoded: " + decoded);
-                        using (StreamWriter sw2 = new StreamWriter(decodedDataPath))
-                        {
-                            sw2.WriteLine(decoded);
-                        }
+                    double compressionRate = (1 - compressedFile.Length / (double)originalFile.Length) * 100;
 
-                        line = reader.ReadLine();
-                    }
+                    Console.WriteLine("Original file size: " + originalFile.Length);
+                    Console.WriteLine("Compressed file size: " + compressedFile.Length);
+                    Console.WriteLine($"Compression rate: {compressionRate:F2}");
                 }
-
-
-                FileStream fs0 = File.OpenRead(filePath);
-                Console.WriteLine("original data file's size: " + fs0.Length);
-
-                FileStream fs1 = File.OpenRead(encodedDataPath);
-                Console.WriteLine("encoded data file's size: " + fs1.Length);
-
-                FileStream fs2 = File.OpenRead(decodedDataPath);
-                Console.WriteLine("decoded data file's size: " + fs2.Length);
             }
-            catch (NullReferenceException)
+            catch (Exception e)
             {
-                Console.WriteLine("null reference, file doesn't exist dude!");
+                Console.WriteLine(e.Message);
             }
-            
         }
     }
-    
+
 }
