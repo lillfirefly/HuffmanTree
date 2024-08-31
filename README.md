@@ -1,4 +1,7 @@
 # Huffman-coding written in C#
+# Original Author
+
+This project was originally created and implemented by me Mennatullah Khaled. It serves as the foundation for similar projects, including subsequent versions developed by others.
 
 A simple implementation of huffamn-coding written in C#
 
