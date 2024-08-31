@@ -1,7 +1,10 @@
 # Huffman-coding written in C#
 # Original Author
 
-This project was originally created and implemented by me Mennatullah Khaled. It serves as the foundation for similar projects, including subsequent versions developed by others.
+## Attribution
+
+This project was originally authored by [Mennatullah] ([GitHub Profile](https://github.com/lillfirefly)) on [December 2023]. Contributions have been made by other developers; however, the original implementation and concept belong to [Mennatullah]. If you use or modify this code, please provide proper attribution to the original author.
+
 
 A simple implementation of huffamn-coding written in C#
 
